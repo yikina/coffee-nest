@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
+import { CreateCoffeeDto } from './dto/create-coffee.dto/create-coffee.dto';
+import { UpdataCoffeeDto } from './dto/create-coffee.dto/update-coffee.dto';
 
 @Controller('coffees')
 //* controller使用构造函数、ts类型声明连接service，并创建实例
@@ -24,13 +26,13 @@ export class CoffeesController {
     //* POST获取请求体内容
     // ! HttpCode修改状态码（处理错误）
     @Post()
-    create(@Body('name') body:object){
-        return this.coffeesService.create(body)
+    create(@Body() createCoffeeDto:CreateCoffeeDto){
+        return this.coffeesService.create(createCoffeeDto)
     }
     //* Patch和Delete方法
     @Patch(':id')
-    update(@Param('id') id:string,@Body() body:any){
-        return this.coffeesService.update(id,body)
+    update(@Param('id') id:string,@Body() updateCoffeeDto:UpdataCoffeeDto){
+        return this.coffeesService.update(id, updateCoffeeDto)
         
     }
 
