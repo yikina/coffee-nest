@@ -20,7 +20,7 @@ export class CoffeesController {
     // * 动态路由，获取param中的id
     @Get(':id')
     findOne(@Param('id') id:string){
-       return this.coffeesService.findOne(id)
+       return this.coffeesService.findOne(''+id)
     }
 
     //* POST获取请求体内容
