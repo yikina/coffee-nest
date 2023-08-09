@@ -156,3 +156,132 @@ findAll(){
     }
 ```
 
+启动数据库以及nestjs，通过postcode发请求可以看到成功连接了数据库
+
+### Relationship
+
+各表之间的relationship主要有：
+
+一对一`@OneToOne()`：主表的每一行在外部表都有且只有一个关联行；
+
+一对多`@OneToMany()`，多对一`@ManyToOne()`：主表的每一行在外部表中都有一个或多个相关行；
+
+多对多`@ManyToMany()`：主表中的每一行在外表都有许多相关的行，并且外表中的每条记录在主表中都有许多相关的行；
+
+在这里，我们希望将coffee与flavors连接起来，在普遍的sql中就是再新建一张表存放二者的id，通过这张表再连接原本coffee和flavors的表，nestjs为我们提供了自动完成的功能，只需要：
+
+1. 新建flavors.entity
+
+   ```tsx
+   @Entity()
+   export class Flavor {
+       @PrimaryGeneratedColumn()
+       id:number;
+   
+       @Column()
+       name:string;
+   
+       @ManyToMany(  //通过ManyToMany装饰器连接Coffee
+           type => Coffee,
+           coffee=>coffee.flavors
+       )
+       coffees:Coffee[];
+   
+   }
+   
+   ```
+
+   
+
+2. 修改coffee.entity
+
+   ```tsx
+     @JoinTable()  //连接flaors
+       @ManyToMany(
+           type => Flavor,
+           flavor => flavor.coffees,
+           {
+               cascade: true,//启用联级插入
+           }
+          
+       )
+       flavors:Flavor[];
+   ```
+
+   
+
+3. 在coffee.,module模块中引入Flavor.entites
+
+   ```tsx
+   @Module({ 
+       imports:[TypeOrmModule.forFeature([Coffee,Flavor])],
+   ```
+
+4. 在coffees.services中标识relation，根据联级插入修改
+
+   ```tsx
+   findAll(){
+           return this.coffeeRepository.find({
+               relations:['flavors'], //标识relation
+           })
+       }
+    
+   
+   
+   async findOne(id:string){
+           const coffee = await this.coffeeRepository.findOne({
+               where: { id: +id },
+               relations: ['flavors'], //标识relation
+             })
+           if(!coffee){
+               throw new HttpException(`coffee ${id} not found`,404)
+           }
+           return coffee;
+       }
+   
+   
+   //创建coffee-同时注意flavors
+      async create(createCoffeeDto:CreateCoffeeDto){
+           const flavors=await Promise.all(
+           createCoffeeDto.flavors.map(name=>this.preloadFlavorByName(name)),
+           )
+           const coffee=this.coffeeRepository.create({
+               ...createCoffeeDto,
+               flavors
+           })
+           return this.coffeeRepository.save(coffee)
+       }
+   
+   
+   
+       async update(id:string,updatecoffeeDto:UpdataCoffeeDto){
+           const flavors=updatecoffeeDto.flavors &&(await Promise.all(
+               updatecoffeeDto.flavors.map(name=>this.preloadFlavorByName(name))
+           ))
+          const coffee=await this.coffeeRepository.preload({
+           id:+id,
+           ...updatecoffeeDto,
+           flavors
+          })
+          if(!coffee){
+           throw new NotFoundException(`coffee ${id} not found`)
+          }
+          return this.coffeeRepository.save(coffee);
+       }
+   
+   //为联级操作写的方法——如果存在flavor，就返回，否则创建
+    private async preloadFlavorByName(name:string):Promise<Flavor>{
+           const existFlavor= await this.flavorRepository.findOneBy(
+               {name:name});
+           if(existFlavor){
+               return existFlavor
+           }
+           return this.flavorRepository.create({name})
+       }
+   }
+   ```
+
+   
+
+#### 
+
