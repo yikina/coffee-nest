@@ -38,6 +38,16 @@ docker-compose up  db -d
 //分离启动db服务，如果只是docker-compose up -d，将会启动yml services下的所有服务
 ```
 
+### 运行Pgadmin4——可视化postgresSQL工具
+
+终端输入
+
+```
+docker run -d -p 5433:80 --name pgadmin4 -e PGADMIN_DEFAULT_EMAIL=test@123.com -e PGADMIN_DEFAULT_PASSWORD=123456 dpage/pgadmin4
+```
+
+打开localhost:5433：80输入刚刚设置的email和密码
+
 ## TypeORM
 
 **ORM** 是 Object Relational Mapping 的缩写，译为“对象关系映射”，它解决了<u>对象和关系型数据库之间的数据交互问题</u>。
@@ -108,5 +118,41 @@ export class Coffee{
     imports:[TypeOrmModule.forFeature([Coffee])],
     controllers: [CoffeesController], providers: [CoffeesService] })
 export class CoffeesModule { }
+```
+
+接着使用pnpm run start启动nest.js，打开pgAdmin4即可看到coffee表
+
+### Repository
+
+在coffee.service中利用构造函数constructor,并使用@InjectRepository连接Entity来连接postgreSQL
+
+```tsx
+import { InjectRepository } from '@nestjs/typeorm';
+
+@Injectable()
+export class CoffeesService {
+    //连接真实数据库
+    constructor(
+        @InjectRepository(Coffee)
+        private readonly coffeeRepository:Repository<Coffee>,
+    ){}
+    
+    ...}
+```
+
+同时如下的方法也要修改为Repository内置的方法
+
+```tsx
+findAll(){
+        return this.coffeeRepository.find()
+    }
+    
+    async findOne(id:string){
+        const coffee=await this.coffeeRepository.findOneBy({id:+id});
+        if(!coffee){
+            throw new HttpException(`coffee ${id} not found`,404)
+        }
+        return coffee;
+    }
 ```
 
