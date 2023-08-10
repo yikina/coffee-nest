@@ -365,3 +365,21 @@ export class CoffeesService {
     }}
 ```
 
+### Index
+
+我们可以使用Index来提高索引效率，可以直接在属性上添加@Index()装饰器，适用于单个属性
+
+```tsx
+@Index()
+@Column()
+name: string
+```
+
+也可以直接在Entity最上方用数组标识需要Index的属性，适用于多个属性
+
+```tsx
+@Index(['name','type'])
+@Entity()
+export class Event {...}
+```
+
