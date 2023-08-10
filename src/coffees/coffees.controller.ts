@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto/create-coffee.dto';
 import { UpdataCoffeeDto } from './dto/create-coffee.dto/update-coffee.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto/pagination-query.dto';
 
 @Controller('coffees')
 //* controller使用构造函数、ts类型声明连接service，并创建实例
@@ -12,9 +13,8 @@ export class CoffeesController {
     // * Get装饰器，客户端对coffees路由发get请求时，进行处理的函数
     // * Query参数对数据进行过滤、分组、排序等操作
     @Get()
-    findAll(@Query() paginationQuery:any){
-        // const{limit,offset}=paginationQuery;
-        return this.coffeesService.findAll()
+    findAll(@Query() paginationQuery:PaginationQueryDto){
+        return this.coffeesService.findAll(paginationQuery)
     }
 
     // * 动态路由，获取param中的id

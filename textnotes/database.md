@@ -196,7 +196,7 @@ findAll(){
 2. 修改coffee.entity
 
    ```tsx
-     @JoinTable()  //连接flaors
+     @JoinTable()  //连接flaors，主动连接需要加入
        @ManyToMany(
            type => Flavor,
            flavor => flavor.coffees,
@@ -283,5 +283,36 @@ findAll(){
 
    
 
-#### 
+### pagination
 
+分页，要向数据库传递分页请求，首先新建一个paginationDto
+
+```tsx
+export class PaginationQueryDto{
+    @IsOptional()  //可选
+    @IsPositive()  //大于0
+   @Type(()=>Number)  //将url传递的param string类型转换为数字
+    limit:number;
+    offset:number;
+}
+```
+
+除了使用@Type()装饰器以外，我们还可以在main.ts中添加配置，使得所有的DTO的类型都可以自动转换，这样就不必在每一个DTO中都填写@Type
+
+```tsx
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist:true, 
+    transform:true,  
+    forbidNonWhitelisted: true,
+    transformOptions:{
+      enableImplicitConversion:true,  //开启DTO自动转换类型
+    }
+  }))
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+根据需要修改controller以及service中的内容，添加paginationDto即可
