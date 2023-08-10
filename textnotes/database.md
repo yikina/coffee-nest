@@ -316,3 +316,52 @@ bootstrap();
 ```
 
 根据需要修改controller以及service中的内容，添加paginationDto即可
+
+## Transaction
+
+含义：针对数据库执行的event，**只表示数据库中的更改**
+
+推荐使用dataSource中的QueryRunner类
+
+例如，我们现在有一个需求，希望在coffee.entity中添加一个recommendations属性，每当有一位用户推荐这种coffee时，对应的recommendations添加
+
+1. 在coffee.entity中添加recommendations属性，设置{default:0}
+2. 创建Event.entity标识事件表
+3. 将Event添加到modules.TypeOrmModule.forFeature([Event])
+4. 在Service中引入datasource，编写事件
+
+```tsx
+export class CoffeesService {
+   
+    constructor(
+        @InjectRepository(Coffee)
+        private readonly coffeeRepository:Repository<Coffee>,
+        @InjectRepository(Flavor)
+        private readonly flavorRepository:Repository<Flavor>,
+        private readonly datasource:DataSource,//引入
+    ){}
+    
+    //使用transaction
+    async recommendCoffee(coffee:Coffee){
+        const queryRunner=this.datasource.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+            coffee.recommendations++;
+          //结合event.entity
+            const recommendEvent=new Event();
+            recommendEvent.name='recommend_coffee';
+            recommendEvent.type='coffee';
+            recommendEvent.payload={coffeeId:coffee.id}
+
+
+        }catch(err){
+            await queryRunner.rollbackTransaction()
+        }finally{
+            await queryRunner.release()
+        }
+    }}
+```
+
