@@ -383,3 +383,78 @@ name: string
 export class Event {...}
 ```
 
+
+
+## Migrations
+
+迁移，可以使得我们对数据库的修改处于一个可控的变化进程当中（底层是Promise），可以run也可以回退。在本地开发环境中，由于我们设置了同步，所以数据库会根据entity的修改而同步，但对于线上的数据库，无法设置同步，所以migrations则显得尤为重要了。
+
+1. 新建ormconfig.js，内容与docker-compose.yml相同但是格式需要修改并添加
+
+   ```js
+   module.exports={
+       type:'postgres',
+       host:'localhost',
+       port:5432,
+       username:'postgres',
+       password:'pass123',
+       entities:['dist/**/*.entity.js'],
+       migrations:['dist/migrations/*.js'],
+       cli:{
+           migrationsDir:'src/migrations'
+       }
+   }
+   ```
+
+2. 在typeorm中调整（使用npx命令不用安装库也可以使用
+
+   ```js
+   npx typeorm migration:create -n CoffeeRefactor
+   ```
+
+   会自动生成一个migrations文件夹，里面有若干文件展示了migration的内容,我们可以手动为其添加up和down的内容
+
+   ```ts
+   import{MigrationInterface,QueryRunner} from 'typeorm'
+   
+   export class CoffeeRefactor1231231 implements MigrationInterface{
+       public async up(queryRunner: QueryRunner):Promise<any>{
+           await queryRunner.query(
+           'ALTER TABLE "coffee" RENAME COLUMN "name" TO "title"')
+       }
+       
+       
+       public async down(queryRunner: QueryRunner):Promise<any>{
+           await queryRunner.query(
+           'ALTER TABLE "coffee" RENAME COLUMN "title" TO "coffee"')
+       }
+       
+   }
+   ```
+
+   由于线上是打包的环境且我们在ormconfig.js中写了打包后的路径dist/migrations/*.js，所以要想测试得先运行
+
+   ```
+   pnpm run build
+   ```
+
+   接着运行执行migration
+
+   ```
+   npx typeorm migration:run
+   ```
+
+   回退：
+
+   ```
+   npm typeorm migration:revert
+   ```
+
+   
+
+除此之外，typeOrm也会自动生成migration以供对比，需要我们输入：
+
+```
+npx typeorm migration: generate -n giveitName
+```
+
