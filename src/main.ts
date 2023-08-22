@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { Response } from './common/response/response';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,7 @@ async function bootstrap() {
   app.enableCors({
     origin:'http://localhost:3022'
   })
+  app.useGlobalInterceptors(new Response())
   await app.listen(3000);
 }
 bootstrap();
