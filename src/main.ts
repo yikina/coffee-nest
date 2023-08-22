@@ -12,6 +12,9 @@ async function bootstrap() {
       enableImplicitConversion:true,  //开启自动转换类型
     }
   }))
+  app.enableCors({
+    origin:'http://localhost:3022'
+  })
   await app.listen(3000);
 }
 bootstrap();
