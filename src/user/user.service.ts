@@ -33,18 +33,21 @@ export class UserService {
   async login(createUser:CreateUserDto){
     const { username,password } = createUser;
     
-    const payload = { username };
-
     const existUser = await this.userRepository.findOne({
       where: { username }
   });
-    if(existUser && await bcrypt.compare(password,existUser.password)){
+   
+    if(!existUser || !await bcrypt.compare(password,existUser.password)){
+      throw new HttpException("用户名或密码错误", HttpStatus.BAD_REQUEST)
+    }
+
+    const payload = { sub:existUser.id,username:username }
       return {
-        ...existUser,
+        user:existUser,
         accessToken:this.jwtService.sign(payload)
       }
-    }
-    throw new HttpException("用户名或密码错误", HttpStatus.BAD_REQUEST)
+    
+
 }
 }
 
