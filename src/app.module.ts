@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './modules/coffees/coffees.module';
+import { PicSignModule } from './modules/pic_sign/pic_sign.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -17,7 +18,8 @@ import { UserModule } from './modules/user/user.module';
       synchronize:true
     }),
     CoffeesModule,
-    UserModule],
+    UserModule,
+    PicSignModule],
   controllers: [AppController],
   providers: [AppService],
 })
