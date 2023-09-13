@@ -17,6 +17,15 @@ export class User{
     @Column({default:null})
     avatar:string;
 
+    @Column({default:0})
+    fan:number;
+
+    @Column({default:0})
+    following:number;
+
+    @Column({default:0})
+    insignia:number;
+
     @BeforeInsert()
     async hashPassword(){
         if(!this.password) return
