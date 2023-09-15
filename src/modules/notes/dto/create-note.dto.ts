@@ -15,5 +15,5 @@ export class CreateNoteDto {
     avatar: string | null;
 
     @IsString()
-    username: string;
+    user_id: string;
 }

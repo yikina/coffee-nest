@@ -6,7 +6,7 @@ import { Notes } from "src/modules/notes/entities/notes.entity";
 @Entity('user')
 export class User{
     @PrimaryGeneratedColumn('uuid')  //使用uuid为每一位用户生成独立唯一的id
-    id:number;
+    id:string;
 
     @PrimaryColumn({length:100})
     username:string;
