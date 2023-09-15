@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { CoffeesModule } from './modules/coffees/coffees.module';
 import { PicSignModule } from './modules/pic_sign/pic_sign.module';
 import { UserModule } from './modules/user/user.module';
+import { NotesModule } from './modules/notes/notes.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UserModule } from './modules/user/user.module';
     }),
     CoffeesModule,
     UserModule,
-    PicSignModule],
+    PicSignModule,
+    NotesModule],
   controllers: [AppController],
   providers: [AppService],
 })
