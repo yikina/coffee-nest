@@ -43,7 +43,7 @@ export class UserService {
 
     const payload = { sub:existUser.id,username:username }
       return {
-        user:existUser,
+        info:existUser,
         accessToken:this.jwtService.sign(payload)
       }
     
