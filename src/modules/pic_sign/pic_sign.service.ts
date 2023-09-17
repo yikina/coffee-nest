@@ -75,7 +75,7 @@ export class PicSignService {
             signature: formData.Signature,
             accessId: formData.OSSAccessKeyId,
             host,
-            dir: '/avatars',
+            dir: 'avatars/',
         };
 
 
