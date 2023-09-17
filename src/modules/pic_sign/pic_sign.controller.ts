@@ -9,4 +9,9 @@ export class PicSignController {
     getSignature() {
         return this.picSignService.getSignature();
     }
+
+    @Get('avatar')
+    getAvatarSignature() {
+        return this.picSignService.getAvatarSignature();
+    }
 }
