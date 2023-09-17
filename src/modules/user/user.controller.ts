@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserInfoDto } from './dto/user-info.dto';
 
 
 @Controller('user')
@@ -19,4 +20,10 @@ export class UserController {
    login(@Body() createUser: CreateUserDto){
     return this.userService.login(createUser)
    }
+
+   @UseInterceptors(ClassSerializerInterceptor)
+   @Patch('update')
+    update(@Body() updateUser: UserInfoDto){
+      return this.userService.update(updateUser)
+    }
 }
