@@ -11,6 +11,9 @@ export class User{
     @PrimaryColumn({length:100})
     username:string;
 
+    @Column({default:'',length:100})
+    nickname:string;
+
     @Exclude() //排除密码字段
     @Column({length:100})
     password:string;

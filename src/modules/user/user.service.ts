@@ -53,15 +53,15 @@ export class UserService {
 
   //修改用户信息
   async update(updateUser: UserInfoDto) {
-    const { id, username, avatar } = updateUser;
-    const existUser = await this.userRepository.findOne({
-      where: { id }
-    });
+    const { id, nickname, avatar } = updateUser;
+    const existUser = await this.userRepository.findOne({ where: { id } });
+  
     if (!existUser) {
-      throw new HttpException("用户不存在", HttpStatus.BAD_REQUEST)
+      throw new HttpException("用户不存在", HttpStatus.BAD_REQUEST);
     }
-    if (username) {
-      existUser.username = username;
+  
+    if (nickname ) {
+      existUser.nickname = nickname;
       await this.userRepository.save(existUser);
     }
     if (avatar) {
@@ -69,9 +69,6 @@ export class UserService {
       await this.userRepository.save(existUser);
     }
     return existUser;
-
-
-
+    
   }
 }
-

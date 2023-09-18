@@ -5,7 +5,7 @@ export class UserInfoDto {
     id: string
 
     @IsString()
-    username: string;
+    nickname: string;
 
     @IsString()
     avatar: string;
