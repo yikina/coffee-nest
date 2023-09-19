@@ -11,9 +11,5 @@ export class CreateNoteDto {
     pic: string;
 
     @IsString()
-    @IsOptional()
-    avatar: string | null;
-
-    @IsString()
     user_id: string;
 }

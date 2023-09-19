@@ -18,8 +18,6 @@ export class Notes {
     @ManyToOne(type => User, user => user.notes, { cascade: true })
     user: User;
 
-    @Column({ default: null })
-    avatar: string;
 
     @Column({ default: 0 })
     collection: number;
