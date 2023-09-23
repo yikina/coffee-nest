@@ -30,4 +30,14 @@ export class NotesService {
 
 
     }
+
+    async getRecommandNotes(skip:number){
+        const realSkip=skip * 8
+        return this.notesRepository
+        .createQueryBuilder('notes')
+        .leftJoinAndSelect('notes.user','user')
+        .skip(realSkip)
+        .take(8)
+        .getMany();
+    }
 }

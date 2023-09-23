@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { NotesService } from './notes.service';
 
@@ -9,5 +9,10 @@ export class NotesController {
   @Post()
   create(@Body() createNoteDto:CreateNoteDto){
     return this.notesService.create(createNoteDto)
+  }
+
+  @Get()
+  getRecommandNotes(@Query('skip') skip:number){
+    return this.notesService.getRecommandNotes(skip)
   }
 }
