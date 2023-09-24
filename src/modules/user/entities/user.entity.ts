@@ -15,7 +15,7 @@ export class User{
     nickname:string;
 
     @Exclude() //排除密码字段
-    @Column({length:100,select: false })
+    @Column({length:100})
     password:string;
 
     @Column({default:null})

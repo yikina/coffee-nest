@@ -31,20 +31,22 @@ export class NotesService {
 
     }
 
-    async getRecommandNotes(skip:number){
-        const realSkip=skip * 8
-        const res= await this.notesRepository
-        .createQueryBuilder('notes')
-        .leftJoinAndSelect('notes.user','user')
-        .skip(realSkip)
-        .take(8)
-        .getMany();
-        if(!res.length){
-            return this.notesRepository
+    async getRecommandNotes(skip: number) {
+        const realSkip = skip * 8
+        const res = await this.notesRepository
             .createQueryBuilder('notes')
-            .leftJoinAndSelect('notes.user','user')
+            .leftJoinAndSelect('notes.user', 'user')
+            .skip(realSkip)
             .take(8)
+            .select(['notes', 'user.id', 'user.username', 'user.nickname', 'user.avatar', 'user.fan', 'user.following', 'user.insignia',])
             .getMany();
+        if (!res.length) {
+            return this.notesRepository
+                .createQueryBuilder('notes')
+                .leftJoinAndSelect('notes.user', 'user')
+                .select(['notes', 'user.id', 'user.username', 'user.nickname', 'user.avatar', 'user.fan', 'user.following', 'user.insignia',])
+                .take(8)
+                .getMany();
         }
         return res
     }
