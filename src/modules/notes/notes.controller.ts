@@ -15,4 +15,9 @@ export class NotesController {
   getRecommandNotes(@Query('skip') skip:number){
     return this.notesService.getRecommandNotes(skip)
   }
+
+  @Get('search')
+  search(@Query('keyword') keyword:string){
+    return this.notesService.search(keyword)
+  }
 }

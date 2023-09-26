@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Notes } from './entities/notes.entity'
 import { CreateNoteDto } from './dto/create-note.dto';
 import { User } from '../user/entities/user.entity';
@@ -50,4 +50,11 @@ export class NotesService {
         }
         return res
     }
-}
+
+    async search(keyword:string){
+        return this.notesRepository.createQueryBuilder('notes')
+        .leftJoinAndSelect('notes.user', 'user')
+        .select(['notes', 'user.id', 'user.username', 'user.nickname', 'user.avatar', 'user.fan', 'user.following', 'user.insignia',])
+        .where('notes.title LIKE :keyword', { keyword: `%${keyword}%` })
+        .getMany();
+}}
