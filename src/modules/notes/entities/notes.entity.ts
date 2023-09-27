@@ -1,6 +1,12 @@
 import { User } from "src/modules/user/entities/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+type picProps={
+ url:string,
+ height:number,
+ width:number,
+ hwScale:number
+}
 @Entity('notes')
 export class Notes {
     @PrimaryGeneratedColumn('uuid')
@@ -12,8 +18,10 @@ export class Notes {
     @Column({ length: 300 })
     content: string;
 
-    @Column()
-    pic: string;
+    @Column('jsonb',{
+        nullable:true
+    })
+    pic:picProps[];
 
     @ManyToOne(type => User, user => user.notes, { cascade: true })
     user: User;
