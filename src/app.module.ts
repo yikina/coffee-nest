@@ -6,6 +6,8 @@ import { CoffeesModule } from './modules/coffees/coffees.module';
 import { PicSignModule } from './modules/pic_sign/pic_sign.module';
 import { UserModule } from './modules/user/user.module';
 import { NotesModule } from './modules/notes/notes.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtUserGuard } from './modules/user/user.jwt.guard';
 
 @Module({
   imports: [
@@ -23,6 +25,10 @@ import { NotesModule } from './modules/notes/notes.module';
     PicSignModule,
     NotesModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtUserGuard
+    }],
 })
 export class AppModule {}

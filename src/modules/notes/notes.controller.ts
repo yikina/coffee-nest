@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Public } from 'src/common/decorator/public.decorator';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { NotesService } from './notes.service';
 
@@ -10,12 +11,14 @@ export class NotesController {
   create(@Body() createNoteDto:CreateNoteDto){
     return this.notesService.create(createNoteDto)
   }
-
+  
+  @Public()
   @Get()
   getRecommandNotes(@Query('skip') skip:number){
     return this.notesService.getRecommandNotes(skip)
   }
 
+  @Public()
   @Get('search')
   search(@Query('keyword') keyword:string){
     return this.notesService.search(keyword)
