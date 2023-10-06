@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Notes } from './entities/notes.entity'
@@ -70,7 +70,7 @@ export class NotesService {
         })
         return this.notesRepository.save(newNote)
     }
-   
+
 
 
     async getRecommandNotes(skip: number) {
@@ -93,10 +93,20 @@ export class NotesService {
         return res
     }
 
-    async search(keyword:string){
+    async search(keyword: string) {
         return this.notesRepository.createQueryBuilder('notes')
             .leftJoinAndSelect('notes.user', 'user')
             .select(['notes', 'user.id', 'user.username', 'user.nickname', 'user.avatar', 'user.fan', 'user.following', 'user.insignia',])
             .where('notes.title LIKE :keyword', { keyword: `%${keyword}%` })
             .getMany();
-}}
+    }
+
+
+    async getCollection(username: string) {
+        return this.notesRepository.createQueryBuilder('notes')
+            .leftJoinAndSelect('notes.user', 'user')
+            .select(['notes', 'user.id', 'user.username', 'user.nickname', 'user.avatar', 'user.fan', 'user.following', 'user.insignia',])
+            .where('user.username = :username', { username })
+            .getMany();
+    }
+}

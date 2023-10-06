@@ -23,4 +23,9 @@ export class NotesController {
   search(@Query('keyword') keyword:string){
     return this.notesService.search(keyword)
   }
+
+  @Get('collection')
+  getCollection(@Query('username') username:string){
+    return this.notesService.getCollection(username)
+  }
 }
