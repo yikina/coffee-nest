@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CoffeesModule } from './modules/coffees/coffees.module';
 import { PicSignModule } from './modules/pic_sign/pic_sign.module';
 import { UserModule } from './modules/user/user.module';
 import { NotesModule } from './modules/notes/notes.module';
@@ -20,7 +19,6 @@ import { JwtUserGuard } from './modules/user/user.jwt.guard';
       autoLoadEntities:true,
       synchronize:true
     }),
-    CoffeesModule,
     UserModule,
     PicSignModule,
     NotesModule],
