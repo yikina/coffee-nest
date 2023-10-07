@@ -102,7 +102,7 @@ export class NotesService {
     }
 
 
-    async getCollection(username: string) {
+    async getPosts(username: string) {
         return this.notesRepository.createQueryBuilder('notes')
             .leftJoinAndSelect('notes.user', 'user')
             .select(['notes', 'user.id', 'user.username', 'user.nickname', 'user.avatar', 'user.fan', 'user.following', 'user.insignia',])

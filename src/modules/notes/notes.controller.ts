@@ -24,8 +24,8 @@ export class NotesController {
     return this.notesService.search(keyword)
   }
 
-  @Get('collection')
+  @Get('posts')
   getCollection(@Query('username') username:string){
-    return this.notesService.getCollection(username)
+    return this.notesService.getPosts(username)
   }
 }
